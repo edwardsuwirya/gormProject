@@ -7,10 +7,9 @@ import (
 )
 
 type Category struct {
+	ID           string `gorm:"column:id;size:36;primary_key"`
+	CategoryName string `gorm:"column:category_name;size:255;not null;index:uq_category,unique"`
 	BaseEntity
-	ID           string    `gorm:"column:id;primary_key"`
-	CategoryName string    `gorm:"column:category_name;not null"`
-	Products     []Product `gorm:"foreignKey:CategoryId"`
 }
 
 func (c *Category) TableName() string {
