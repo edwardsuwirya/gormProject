@@ -1,9 +1,10 @@
 package main
 
 import (
+	"fmt"
 	"github.com/edwardsuwirya/gormProject/config"
-	"github.com/edwardsuwirya/gormProject/repository"
-	"github.com/edwardsuwirya/gormProject/useCase"
+	"github.com/edwardsuwirya/gormProject/delivery"
+	"strings"
 )
 
 const (
@@ -17,33 +18,17 @@ type app struct {
 }
 
 func (a app) run() {
+	fmt.Println(AppName)
+	fmt.Println(AppTagLine)
+	fmt.Printf("%s\n", strings.Repeat("=", 50))
 	db, err := NewDbInitialization(a.appConfig).InitDB()
 	if err != nil {
 		panic(err)
 	}
-	repo := repository.NewProductRepo(db)
-	appUseCase := useCase.NewProductUseCase(repo)
-	//_ = appUseCase.RegisterProduct(&entity.Product{
-	//	ProductName: "Gelas Plastik",
-	//	ProductCode: "999",
-	//	CategoryId:  "747adc32-b1e6-11ea-846d-5232048075cb",
-	//})
-	//_ = appUseCase.RegisterProduct(&entity.Product{
-	//	ProductName: "Pot Bunga",
-	//	ProductCode: "888",
-	//	Category:entity.Category{
-	//		CategoryName: "Perlengkapan Taman",
-	//	},
-	//})
-	//res:=appUseCase.GetProductCollection()
-	//for _, p := range res {
-	//	config.AppConfig.Logger.Info(p.ToString())
-	//}
-	res:= appUseCase.GetProductById("54091fe0-5520-11ea-bb2b-9378803a9e60")
-	config.AppConfig.Logger.Info(res.ToString())
-
-	//countResult := appUseCase.GetTotalProduct()
-	//config.AppConfig.Logger.Info("Total ",*countResult)
+	//cat := delivery.NewCategoryDelivery(db)
+	//cat.Show()
+	prod := delivery.NewProductDelivery(db)
+	prod.Show()
 
 }
 func newApp() *app {

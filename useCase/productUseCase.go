@@ -7,9 +7,9 @@ import (
 
 type ProductUseCase interface {
 	RegisterProduct(product *entity.Product) *entity.Product
-	GetProductCollection() []*entity.Product
+	GetProductCollection(page, pageSize, order string) []*entity.Product
 	GetProductById(id string) *entity.Product
-	GetTotalProduct() *int
+	GetTotalProduct() *int64
 }
 
 type ProductUseCaseImplementation struct {
@@ -24,8 +24,11 @@ func (p *ProductUseCaseImplementation) RegisterProduct(product *entity.Product) 
 	return prod
 }
 
-func (p *ProductUseCaseImplementation) GetProductCollection() []*entity.Product {
-	res, err := p.repo.FindAll()
+func (p *ProductUseCaseImplementation) GetProductCollection(page, pageSize, order string) []*entity.Product {
+	if len(order) == 0 {
+		order = "id asc"
+	}
+	res, err := p.repo.FindAll(page, pageSize, order)
 	if err != nil {
 		return nil
 	}
@@ -40,7 +43,7 @@ func (p *ProductUseCaseImplementation) GetProductById(id string) *entity.Product
 	return res
 }
 
-func (p *ProductUseCaseImplementation) GetTotalProduct() *int {
+func (p *ProductUseCaseImplementation) GetTotalProduct() *int64 {
 	res, err := p.repo.Count()
 	if err != nil {
 		return nil

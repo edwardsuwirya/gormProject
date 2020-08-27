@@ -3,7 +3,7 @@ package entity
 import (
 	"encoding/json"
 	guuid "github.com/google/uuid"
-	"github.com/jinzhu/gorm"
+	"gorm.io/gorm"
 )
 
 type Product struct {
@@ -18,11 +18,8 @@ type Product struct {
 func (p *Product) TableName() string {
 	return "m_product"
 }
-func (p *Product) BeforeCreate(scope *gorm.Scope) error {
-	err := scope.SetColumn("ID", guuid.New().String())
-	if err != nil {
-		panic(err)
-	}
+func (p *Product) BeforeCreate(tx *gorm.DB) (err error) {
+	p.ID = guuid.New().String()
 	return nil
 }
 func (p *Product) ToString() string {
@@ -31,4 +28,12 @@ func (p *Product) ToString() string {
 		return ""
 	}
 	return string(product)
+}
+
+type ProductWithCategoryDTO struct {
+	Id           string
+	ProductCode  string
+	ProductName  string
+	CategoryId   string
+	CategoryName string
 }
